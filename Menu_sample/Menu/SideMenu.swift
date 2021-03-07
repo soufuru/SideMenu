@@ -20,16 +20,18 @@ class SideMenu: UIView {
     var parentVC: UIViewController!
     var isSideMenuhidden: Bool = true
     
-    //デリゲートのインスタンスを宣言
-    weak var delegate: SideMenuDelegate?
+    private weak var delegate: SideMenuDelegate?
     
-    //イニシャライザー
-    init(image: [UIImage],parentViewController: UIViewController) {
+    init(image: [UIImage],
+         parentViewController: UIViewController,
+         delegate: SideMenuDelegate
+    ) {
         self.size = CGRect(x:UIScreen.main.bounds.width,
                            y:0,
                            width:UIScreen.main.bounds.width*2,
                            height:UIScreen.main.bounds.height
         )
+        self.delegate = delegate
         super.init(frame: size!)
         //サイドメニューの背景色
         self.backgroundColor = UIColor.darkGray
@@ -96,7 +98,7 @@ class SideMenu: UIView {
     }
     
      //画面の端からのスワイプを検出
-    public func EdgePanGesture(sender: UIScreenEdgePanGestureRecognizer) {
+    public func edgePanGesture(sender: UIScreenEdgePanGestureRecognizer) {
         self.translatesAutoresizingMaskIntoConstraints = false
         
         //移動量を取得する。
@@ -108,21 +110,17 @@ class SideMenu: UIView {
         self.layoutIfNeeded()
         
         //ドラッグ終了時の処理
-        if(sender.state == UIGestureRecognizer.State.ended) {
-            if(self.frame.origin.x < parentVC.view.frame.size.width/3) {
+        if sender.state == UIGestureRecognizer.State.ended {
+            if self.frame.origin.x < parentVC.view.frame.size.width/3 {
                 //ドラッグの距離が画面幅の三分の一を超えた場合はメニューを出す
                 UIView.animate(withDuration: 0.8,
-                               animations: {
-                                self.frame.origin.x = UIScreen.main.bounds.width*2/3
-                },
+                               animations: { self.frame.origin.x = UIScreen.main.bounds.width*2/3 },
                                completion:nil)
                 isSideMenuhidden = false
-            }else {
+            } else {
                 //ドラッグの距離が画面幅の半分以下の場合はそのままビューを右に戻す。
                 UIView.animate(withDuration: 0.8,
-                               animations: {
-                                self.frame.origin.x = UIScreen.main.bounds.width
-                },
+                               animations: { self.frame.origin.x = UIScreen.main.bounds.width },
                                completion:nil)
             }
         }
@@ -130,17 +128,7 @@ class SideMenu: UIView {
         sender.setTranslation(CGPoint.zero, in: parentVC.view)
     }
     
-    
-/*          デリゲートメソッド　親ビューコントローラーに委譲    */
-    @objc func onClickButton(sender:UIButton){
+    @objc func onClickButton(sender: UIButton){
         self.delegate?.onClickButton(sender: sender)
     }
-    
-
-    //Only override draw() if you perform custom drawing.
-    //An empty implementation adversely affects performance during animation.
-//    override func draw(_ rect: CGRect) {
-//    }
-    
-
 }
