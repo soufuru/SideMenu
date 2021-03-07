@@ -56,7 +56,7 @@ class SideMenu: UIView {
     }
     
     
-    func clearViewTapped(){
+    @objc func clearViewTapped(){
         if isSideMenuhidden == false {
             isSideMenuhidden = true
             UIView.animate(withDuration: 0.8,
@@ -81,7 +81,7 @@ class SideMenu: UIView {
             //ボタンの画像
             button.setImage(image[i], for: .normal)
             //ボタンの四隅に余白をつける
-            button.imageEdgeInsets = UIEdgeInsetsMake(20, 20, 20, 20)
+            button.imageEdgeInsets = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
             //ボタンの背景色
             button.backgroundColor = UIColor.yellow
             // サイズの半分の値 (丸いボタンにするため)
@@ -108,7 +108,7 @@ class SideMenu: UIView {
         self.layoutIfNeeded()
         
         //ドラッグ終了時の処理
-        if(sender.state == UIGestureRecognizerState.ended) {
+        if(sender.state == UIGestureRecognizer.State.ended) {
             if(self.frame.origin.x < parentVC.view.frame.size.width/3) {
                 //ドラッグの距離が画面幅の三分の一を超えた場合はメニューを出す
                 UIView.animate(withDuration: 0.8,
@@ -132,7 +132,7 @@ class SideMenu: UIView {
     
     
 /*          デリゲートメソッド　親ビューコントローラーに委譲    */
-    func onClickButton(sender:UIButton){
+    @objc func onClickButton(sender:UIButton){
         self.delegate?.onClickButton(sender: sender)
     }
     
